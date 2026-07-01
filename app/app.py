@@ -21,6 +21,5 @@ def ping():
 
 # TODO (Görev - Hafta 2): /health endpoint'ini buraya ekle
 
-
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000, debug=(APP_ENV == "development"))
+    app.run(host="0.0.0.0", port=5000, debug=(APP_ENV == "development")) 
