@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: intern-app
-          image: ghcr.io/GITHUB_USER/intern-cicd-project:latest  # kendi kullanıcı adını yaz
+          image: ghcr.io/furkanava/devops-train-project:latest  # kendi kullanıcı adını yaz
           ports:
             - containerPort: 5000
           env:
@@ -37,7 +37,7 @@ spec:
             periodSeconds: 15
           readinessProbe:
             httpGet:
-              path: /ping   # Görev (Hafta 2 sonrası): Bunu /health olarak değiştir
+              path: /health   # Görev (Hafta 2 sonrası): Bunu /health olarak değiştir
               port: 5000
             initialDelaySeconds: 5
             periodSeconds: 10

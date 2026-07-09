@@ -27,6 +27,8 @@ def test_ping_returns_pong(client):
     assert data["pong"] is True
 
 
-# TODO (Görev - Hafta 2): /health endpoint için test yaz
-# def test_health_returns_ok(client):
-#     ...
+def test_health_returns_ok(client):
+    response = client.get("/health")
+    data = response.get_json()
+    assert response.status_code == 200
+    assert data["status"] == "ok"

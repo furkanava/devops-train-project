@@ -57,7 +57,7 @@ cd intern-cicd-project
 cd app
 pip install -r requirements.txt
 python app.py
-# → http://localhost:6000
+# → http://localhost:5000
 ```
 
 ### 3. Docker ile Çalıştır
@@ -65,7 +65,7 @@ python app.py
 ```bash
 docker build -t intern-app:local .
 docker run -p 5000:5000 intern-app:local
-# → http://localhost:6000
+# → http://localhost:5000
 ```
 
 ### 4. Docker Compose ile Çalıştır

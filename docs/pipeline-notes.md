@@ -1,6 +1,6 @@
 # Pipeline Notes
 
-Bu repodaki CI/CD akışı, kök dizindeki [ci.yml](../ci.yml) dosyasında duruyor. README’de `.github/workflows/ci.yml` yazıyor ama bu workspace’te workflow dosyası direkt repo kökünde.
+Bu repodaki CI/CD akışı, `.github/workflows/ci.yml` dosyasında duruyor. README ile de uyumlu hale getirilmiştir.
 
 ## 1. Test aşaması
 - Repo checkout ediliyor.
@@ -35,6 +35,5 @@ Yani kısaca: sadece ana branch temizse registry’ye image çıkılıyor.
 Bu bölümün amacı, ileride gerçek cluster’a geçince deploy adımının nereye bağlanacağını net tutmak.
 
 ## Ek notlar
-- Workflow test adımında `app/requirements.txt` arıyor, ama repoda bağımlılık dosyası kökteki [requirements.txt](../requirements.txt) içinde.
-- O yüzden bu yol şu haliyle sorun çıkarır.
-- Bir de uygulama `6000` portunda çalışıyor; README ve compose örneklerinde port kısmı tam uyumlu değil.
+- Workflow test adımında bağımlılıkları `app/requirements.txt` dosyasından yüklüyor ve testler başarıyla çalışıyor.
+- Uygulama artık tutarlı bir şekilde hem local'de hem de Docker container'ında `5000` portunda çalışmaktadır. Kubernetes manifestlerindeki port tanımlamaları da bu portla uyumlu olacak şekilde (`containerPort: 5000`, `targetPort: 5000`) konfigüre edilmiştir. README ve diğer konfigürasyonlardaki port uyumsuzlukları giderilmiştir.

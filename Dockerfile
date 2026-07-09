@@ -1,14 +1,38 @@
-# Bu Dockerfile kasıtlı olarak geliştirilmeye açık bırakılmıştır.
-# Görev (Hafta 2): Bu dosyayı multi-stage build'e çevir.
+# 1. Aşama: Derleme (Build) Aşaması
+# Python 3.11 tabanlı hafif Alpine imajını builder olarak kullanıyoruz
+FROM python:3.11-alpine AS builder
 
-FROM python:3.11 # From komutu base image göstermek için kullanılır. Bu image python 3.11 içerir.
-WORKDIR /app # Çalışma dizinini /app olarak ayarlıyoruz. Bu dizin, container içinde çalıştırılacak komutlar için referans noktasıdır.   
+# Derleme işlemlerinin yapılacağı çalışma dizinini /build olarak belirliyoruz
+WORKDIR /build
 
-COPY requirements.txt . # requirements.txt dosyasını container içine kopyalıyoruz. Bu dosya, uygulamanın bağımlılıklarını listeler. 
-RUN pip install -r requirements.txt # requirements.txt dosyasındaki bağımlılıkları yüklemek için pip install komutunu çalıştırıyoruz.   
+# Bağımlılık listesini içeren requirements.txt dosyasını kopyalıyoruz
+COPY app/requirements.txt .
 
-COPY app/ . # app dizinindeki tüm dosyaları container içine kopyalıyoruz. Bu, uygulamanın kaynak kodunu içerir. 
+# Bağımlılıkları kullanıcıya özel dizine yüklüyoruz, pip önbelleğini temiz tutarak boyutu küçük tutuyoruz
+RUN pip install --no-cache-dir --user -r requirements.txt
 
-EXPOSE 5000 # Bu komut, container''ın 5000 numaralı portunu dış dünyaya açar. Flask uygulamaları genellikle bu port üzerinden çalışır.
+# 2. Aşama: Çalışma (Runtime) Aşaması
+# Çalışma ortamı için yine temiz ve hafif Alpine imajını kullanıyoruz
+FROM python:3.11-alpine AS runtime
 
-CMD ["python", "app.py"] # CMD komutu, container başlatıldığında çalıştırılacak varsayılan komutu belirtir. Bu durumda, Flask uygulamasını başlatmak için python app.py komutunu çalıştırıyoruz.    
+# Uygulama dosyalarının bulunacağı çalışma dizinini /app olarak belirliyoruz
+WORKDIR /app
+
+# İlk aşamada (builder) yüklediğimiz python paketlerini çalışma ortamına kopyalıyoruz
+COPY --from=builder /root/.local /root/.local
+
+# Uygulama kodlarımızı (/app dizinine) kopyalıyoruz
+COPY app/ .
+
+# Bağımlılıkların çalıştırılabilir dosyalarını bulabilmek için PATH ortam değişkenine ekliyoruz
+ENV PATH=/root/.local/bin:$PATH
+# Python loglarının arabelleğe alınmadan anında terminale yazılmasını sağlıyoruz
+ENV PYTHONUNBUFFERED=1
+# Uygulama ortamını production olarak tanımlıyoruz
+ENV APP_ENV=production
+
+# Uygulamanın çalışacağı 5000 portunu dış dünyaya açıyoruz
+EXPOSE 5000
+
+# Uygulamayı başlatan ana komutu tanımlıyoruz
+CMD ["python", "app.py"]

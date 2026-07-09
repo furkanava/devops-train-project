@@ -19,7 +19,11 @@ def ping():
     return jsonify({"pong": True})
 
 
-# TODO (Görev - Hafta 2): /health endpoint'ini buraya ekle
+@app.route("/health")
+def health():
+    return jsonify({"status": "ok"})
+
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000, debug=(APP_ENV == "development")) 
+    app.run(host="0.0.0.0", port=5000, debug=(APP_ENV == "development"))
+    
