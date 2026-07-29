@@ -5,7 +5,7 @@ metadata:
   labels:
     app: intern-app
 spec:
-  replicas: 1   # Görev (Hafta 4): Bu değeri 2'ye çıkar, ne değiştiğini gözlemle
+  replicas: 2   # Hafta 4: Yüksek erişilebilirlik (High Availability) ve yük dengeleme için pod sayısını 2'ye çıkardık
   selector:
     matchLabels:
       app: intern-app
@@ -21,7 +21,10 @@ spec:
             - containerPort: 5000
           env:
             - name: APP_ENV
-              value: "production"   # Görev (Hafta 4): Bunu ConfigMap'ten oku
+              valueFrom:
+                configMapKeyRef:
+                  name: intern-app-config
+                  key: APP_ENV   # Hafta 4: APP_ENV değerini merkezi ConfigMap'ten okuyoruz
           resources:
             requests:
               memory: "64Mi"

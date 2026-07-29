@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: intern-app-config
+  labels:
+    app: intern-app
+data:
+  APP_ENV: "production"

@@ -74,18 +74,18 @@ jobs:
             ${{ env.IMAGE_NAME }}:${{ github.sha }} \
             --format='Image boyutu: {{.Size}} byte'
 
-        # Trivy sonucunu PR yorumunda kullanmak üzere dosyaya kaydeder
-      - name: Trivy PR raporu oluştur
+      # Trivy sonucunu PR yorumunda kullanmak üzere JSON dosyasına kaydeder
+      - name: Trivy PR raporu oluştur (JSON)
         uses: aquasecurity/trivy-action@master
         with:
           # Taranacak Docker image'ı belirtir
           image-ref: ${{ env.IMAGE_NAME }}:${{ github.sha }}
 
-          # Raporu okunabilir tablo biçiminde hazırlar
-          format: "table"
+          # Raporu işlenebilir JSON biçiminde hazırlar
+          format: "json"
 
           # Tarama sonucunu bu dosyaya kaydeder
-          output: "trivy-results.txt"
+          output: "trivy-results.json"
 
           # Bu raporlama adımı pipeline'ı durdurmaz
           exit-code: "0"
@@ -96,7 +96,12 @@ jobs:
           # Yalnızca yüksek ve kritik açıkları raporlar
           severity: "CRITICAL,HIGH"
 
-      # Trivy raporunu yalnızca Pull Request çalışmalarında yorum olarak ekler
+      # Trivy JSON raporunu sade ve okunabilir bir Markdown özetine dönüştürür
+      - name: Trivy raporunu formatla
+        run: |
+          python3 scripts/format_trivy.py trivy-results.json trivy-comment.md
+
+      # Formatlanmış Trivy raporunu yalnızca Pull Request çalışmalarında yorum olarak ekler
       - name: Trivy sonucunu PR'a yaz
         if: github.event_name == 'pull_request'
         uses: marocchino/sticky-pull-request-comment@v2
@@ -104,8 +109,8 @@ jobs:
           # Her çalışmada yeni yorum oluşturmak yerine aynı yorumu günceller
           header: trivy-security-report
 
-          # Yorumun içeriğini Trivy rapor dosyasından alır
-          path: trivy-results.txt
+          # Yorumun içeriğini formatlanmış Markdown rapor dosyasından alır
+          path: trivy-comment.md
 
       # Kritik veya yüksek açık bulunursa pipeline'ı durdurur
       - name: Trivy ile güvenlik taraması yap
