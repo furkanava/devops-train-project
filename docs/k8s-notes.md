@@ -64,4 +64,4 @@ env:
 
 ## 4. Trivy PR Yorumu Formatlama İyileştirmesi
 
-Mentor geri bildirimine istinaden; Trivy taramasındaki uzun paket yollarının (`root/.local/lib/python3.11/...`) okunabilirliği düşürmesini engellemek için `scripts/format_trivy.py` betiğini ekledim ve `.github/workflows/ci.yml` dosyasını JSON çıktısını işleyip temiz bir Markdown özet tablosu basacak şekilde güncelledim.
+Trivy taramasındaki uzun paket yollarının (`root/.local/lib/python3.11/...`) okunabilirliği düşürmesini engellemek için `scripts/format_trivy.py` betiğini ekledim ve `.github/workflows/ci.yml` dosyasını JSON çıktısını işleyip temiz bir Markdown özet tablosu basacak şekilde güncelledim.
