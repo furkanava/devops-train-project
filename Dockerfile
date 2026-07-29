@@ -15,6 +15,10 @@ RUN pip install --no-cache-dir --user -r requirements.txt
 # Çalışma ortamı için yine temiz ve hafif Alpine imajını kullanıyoruz
 FROM python:3.11-alpine AS runtime
 
+# Setuptools yalnızca paket hazırlarken gerekir, uygulama çalışırken gerekli değildir
+# Trivy'nin bulduğu güvenlik açıklarını runtime image'dan kaldırmak için siliyoruz
+RUN pip uninstall --yes setuptools
+
 # Uygulama dosyalarının bulunacağı çalışma dizinini /app olarak belirliyoruz
 WORKDIR /app
 
