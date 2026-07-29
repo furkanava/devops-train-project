@@ -36,19 +36,14 @@ Bu komut oluşturulan image’ı inceliyor ve boyutunu byte olarak ekrana yazıy
 
 Önceki hafta Dockerfile’ı multi-stage yapıya çevirmiştik. Bu adım sayesinde ileride Dockerfile’da yaptığımız değişikliklerin image boyutunu nasıl etkilediğini görebileceğiz.
 
-## Trivy Raporunu Dosyaya Yazdırdım
+## Trivy Raporunu Formatlayıp PR Yorumuna Ekledim
 
-Projede daha önceden Trivy ile güvenlik taraması yapılıyordu. Fakat taramanın sonucu yalnızca GitHub Actions loglarında görünüyordu.
+Projede daha önceden Trivy çıktısı ham tablo olarak geliyor ve uzun paket yolları nedeniyle okunabilirliği düşük kalıyordu.
 
-Sonucu daha kolay kullanabilmek için Trivy çıktısını `trivy-results.txt` isimli bir dosyaya yazdıran yeni bir adım ekledim.
-
-Bu adımda `exit-code: "0"` kullandım. Bunun nedeni bu ilk taramanın görevinin pipeline’ı durdurmak değil, yalnızca rapor oluşturmak olmasıdır.
-
-Raporda sadece `HIGH` ve `CRITICAL` seviyesindeki önemli güvenlik açıklarını gösteriyorum.
-
-## Trivy Sonucunu PR Yorumuna Ekledim
-
-Oluşturulan Trivy raporunu Pull Request’e yorum olarak ekleyen bir adım ekledim.
+Bu durumu iyileştirmek için:
+1. Trivy çıktısını JSON formatında `trivy-results.json` dosyasına kaydettim.
+2. `scripts/format_trivy.py` betiğini yazarak bu JSON verisindeki karmaşık dosya yollarını (site-packages paketlerini) kategorize eden, temiz bir Markdown özet tablosu ürettim.
+3. Hazırlanan bu sadeleştirilmiş Markdown özetini (`trivy-comment.md`) `sticky-pull-request-comment` eylemi ile Pull Request'e yorum olarak ekledim.
 
 Bu adım yalnızca bir Pull Request açıldığında çalışıyor:
 
